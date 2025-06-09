@@ -1,0 +1,89 @@
+@startuml Payroll System Class Diagram
+
+' Enable strict mode to prevent automatic attribute/method creation
+skinparam strictuml true
+
+' Define class styles
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam classBackgroundColor #F9F9F9
+skinparam classBorderColor #333333
+skinparam classArrowColor #333333
+skinparam shadowing false
+
+' Define packages
+package "com.payroll" {
+    ' Abstract Employee class
+    abstract class Employee {
+        #id: int
+        #name: String
+        #yearsOfExperience: int
+        #nextId: int {static}
+        +{abstract} computeSalary(): double
+        +displayInfo(): void
+        +getId(): int
+        +getName(): String
+        +getYearsOfExperience(): int
+    }
+
+    ' Employee subclasses
+    class Manager {
+        -BASE_SALARY: double {static final}
+        -YEARLY_INCREMENT: double {static final}
+        +computeSalary(): double
+    }
+
+    class Developer {
+        -BASE_SALARY: double {static final}
+        -YEARLY_INCREMENT: double {static final}
+        +computeSalary(): double
+    }
+
+    class Intern {
+        -BASE_SALARY: double {static final}
+        -YEARLY_INCREMENT: double {static final}
+        -MAX_EXPERIENCE: int {static final}
+        +computeSalary(): double
+    }
+
+    ' Main PayrollSystem class
+    class PayrollSystem {
+        -employees: List<Employee>
+        -scanner: Scanner {static}
+        +addEmployee(employee: Employee): void
+        +displayPayroll(): void
+        +calculateTotalPayroll(): double
+        +getEmployees(): List<Employee>
+    }
+
+    ' Exceptions package
+    package "com.payroll.exceptions" {
+        class InvalidEmployeeDataException {
+            +InvalidEmployeeDataException(String)
+            +InvalidEmployeeDataException(String, Throwable)
+        }
+
+        class ExperienceOutOfBoundsException {
+            +ExperienceOutOfBoundsException(String)
+            +ExperienceOutOfBoundsException(String, Throwable)
+        }
+    }
+}
+
+' Define relationships
+Employee <|-- Manager
+Employee <|-- Developer
+Employee <|-- Intern
+PayrollSystem "1" *-- "*" Employee
+InvalidEmployeeDataException <|-- ExperienceOutOfBoundsException
+
+' Add notes
+note "Manages a collection of employees\nand handles payroll operations" as N1
+note "Abstract base class for all\nemployee types" as N2
+note "Custom exceptions for\nvalidation errors" as N3
+
+PayrollSystem .. N1
+Employee .. N2
+InvalidEmployeeDataException .. N3
+
+@enduml
